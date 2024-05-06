@@ -1,4 +1,5 @@
-﻿namespace Dominio.Entidades;
+﻿using Domain.Entities.Base;
+namespace Dominio.Entidades;
 
 public class Usuario
 {
@@ -14,6 +15,7 @@ public class Usuario
         NomeUsuario = nomeUsuario;
         Email = email;
         HashSenha = hashSenha;
+        // ValidateEntity();
     }
 
     public void AtualizarPerfil(string novoNomeUsuario, string novoEmail, string novaUrlFotoPerfil)
@@ -21,10 +23,16 @@ public class Usuario
         NomeUsuario = novoNomeUsuario;
         Email = novoEmail;
         UrlFotoPerfil = novaUrlFotoPerfil;
+       
     }
 
     public void AlterarSenha(string novaHashSenha)
     {
         HashSenha = novaHashSenha;
     }
+
+    //public void ValidateEntity()
+    //{
+    //    AssertionConcern.AssertArgumentNotEmpty(NomeUsuario, "O nome não pode estar vazio!");
+    //}
 }
