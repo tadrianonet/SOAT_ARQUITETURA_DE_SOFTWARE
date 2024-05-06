@@ -1,4 +1,7 @@
+using Application;
 using Application.UseCases;
+using HealthChecks.UI.Client;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,8 +12,27 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+#region [Healthcheck]
+builder.Services.AddHealthChecks()
+            .AddNpgSql(builder.Configuration.GetSection("DatabaseSettings:ConnectionString").Value,
+                name: "postgreSQL", tags: new string[] { "db", "data" });
+
+
+builder.Services.AddHealthChecksUI(opt =>
+{
+    opt.SetEvaluationTimeInSeconds(15); //time in seconds between check
+    opt.MaximumHistoryEntriesPerEndpoint(60); //maximum history of checks
+    opt.SetApiMaxActiveRequests(1); //api requests concurrency
+
+    opt.AddHealthCheckEndpoint("default api", "/health"); //map health check api
+}).AddInMemoryStorage();
+
+#endregion
+
+
+
 #region [DI]
-builder.Services.AddTransient<IAuthenticationUseCase, AuthenticationUseCase>();
+InfraBootstrapper.Register(builder.Services);
 #endregion
 
 
@@ -28,6 +50,17 @@ if (app.Environment.IsDevelopment())
         c.SpecUrl = "/swagger/v1/swagger.json";
     });
 }
+
+#region [Healthcheck]
+app.UseHealthChecks("/health", new HealthCheckOptions
+{
+    Predicate = _ => true,
+    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse,
+
+}).UseHealthChecksUI(h => h.UIPath = "/health-ui");
+
+#endregion
+
 
 app.UseAuthorization();
 
