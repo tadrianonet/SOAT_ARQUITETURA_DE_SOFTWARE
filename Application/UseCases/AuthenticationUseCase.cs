@@ -1,4 +1,4 @@
-﻿using Dominio.Repository;
+﻿using Application.Repository;
 
 namespace Application.UseCases;
 

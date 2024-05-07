@@ -1,6 +1,6 @@
 using Application.UseCases;
 using Dominio.Entidades;
-using Dominio.Repository;
+using Application.Repository;
 using Moq;
 
 namespace Applicantion.Tests

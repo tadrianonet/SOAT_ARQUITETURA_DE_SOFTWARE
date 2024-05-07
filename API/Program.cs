@@ -32,6 +32,7 @@ builder.Services.AddHealthChecksUI(opt =>
 
 
 #region [DI]
+ApplicantionBootstrapper.Register(builder.Services);
 InfraBootstrapper.Register(builder.Services);
 #endregion
 
